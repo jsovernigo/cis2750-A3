@@ -1,0 +1,30 @@
+<html><body>
+<h1 style="text-align: center">Message Forum Stream Selection</h1>
+
+<br>
+<div id="card">
+
+<html>
+<body>
+
+<?php
+
+$files = scandir('./');
+
+foreach($files as $fn)
+{
+	if($fn[0] != '.')
+	{
+		echo $fn;
+	}
+}
+?>
+
+</body>
+</html>
+
+
+</div>
+
+<br>
+</body></html>

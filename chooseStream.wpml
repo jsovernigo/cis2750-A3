@@ -1,0 +1,2 @@
+.h(size=1,text="Message Forum Stream Selection",style="text-align: center")
+.t(text="<div id="card">").t(text="Please select a stream to read").t(file="getStreams.php").t(text="</div>")

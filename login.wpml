@@ -1,0 +1,2 @@
+.h(size=1,text="Message Forum Login",style="text-align: center")
+.t(text="<div id="card">").i(action="chooseStream.php",text="Username:<br>",name="username",value="").t(text="</div>")

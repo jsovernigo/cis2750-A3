@@ -1,0 +1,1 @@
+.e(foreach($output as $line){echo $line;},exec="./testParse pages/test.wpml")
