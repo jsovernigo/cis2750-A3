@@ -2,43 +2,47 @@ body
 {
 	padding: 0;
 	margin: 0;
-	background: url('steely-wall.jpg');
-	background-size: cover;
+	background #ffffff;
 }
 
-h1
+#header
 {
 	height: 7%;
 	width: 100%;
-
-	padding: 10px;
+	padding: 5px 5px 5px 5px;
 	margin: 0;
+	text-align: center;
 
-	text-align: Left;
-
+	background: #0d68a5;
 	color: white;
-	background: #3c4759;
-	opacity: 0.90;
-	border: solid 1px #000000;
-	border-bottom: solid 4px #000000;
-}
-
-p
-{
-	text-align: left;
-	font-family: "Arial";
+	font-family: "arial";
 }
 
 #card
 {
-	padding: 10px 10px 10px 10px;
-	margin-top: 10%;
-	margin-right: 25%;
-	margin-left: 25%;
-	text-align: center;
-	background: #3c4759;
-	color: white;
-	opacity: 0.80;
-	border: solid 1px #000000;
-	border-bottom: solid 4px #000000;
+	padding: 10px;
+	margin-top: 10px;
+	margin-right: 20%;
+	margin-left: 20%;
+
+	text-align: left;
+	background: #ffffff;
+	color: black;
+
+	border: solid 1px lightgray;
+	border-bottom: solid 2px;
+}
+
+#view
+{
+	padding: 10px;
+	margin-top: 10px;
+	margin-right: 10%;
+	margin-left: 10%;
+	text-align: left;
+
+	background: #ffffff;
+	color: black;
+	border: solid 1px lightgray;
+	border-bottom: solid 2px;
 }

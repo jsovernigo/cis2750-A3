@@ -1,7 +1,7 @@
 <html>
 
 <head>
-	<title>Choose Stream</title>
+	<title>Forum Menu</title>
 	<link href="style.css" type="text/css" rel="stylesheet">
 </head>
 
@@ -10,11 +10,11 @@
 <?php
 
 exec("./create chooseStream.wpml", $output, $result);
-
-$script = "";
-$inphp = 0;
-
 include "interpret.php";
+
+echo "<input type=\"hidden\" value=\"".$_POST["username"]."\" name=\"username\" form=\"\">";
+echo "<input type=\"hidden\" value=\"".$_POST["username"]."\" name=\"username\" form=\"\">";
+echo "<input type=\"hidden\" value=\"".$_POST["username"]."\" name=\"username\" form=\"\">";
 
 ?>
 

@@ -5,7 +5,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <dirent.h>
+#include <sys/types.h>
 
 char* createText(char* textTag)
 {
@@ -297,6 +298,7 @@ char* createButton(char* buttonTag)
 	char tagArgs[1024];
 	char buttonName[512];
 	char buttonLink[512];
+	char buttonText[512];
 
 	char* finalTag;
 	char** attributes;
@@ -306,6 +308,7 @@ char* createButton(char* buttonTag)
 	tagArgs[0] = '\0';
 	buttonName[0] = '\0';
 	buttonLink[0] = '\0';
+	buttonText[0] = '\0';
 
 	/* gets the arguments for this tag. */
 	attributes = getArgs(buttonTag);
@@ -332,6 +335,15 @@ char* createButton(char* buttonTag)
 
 				free(value);
 			}
+			else if(strncmp("text", attributes[i], 4) == 0)
+			{
+				char* value;
+
+				value = getValue(attributes[i]);
+				strcpy(buttonText, value);
+
+				free(value);
+			}
 			else
 			{
 				strcat(tagArgs, " ");
@@ -345,16 +357,19 @@ char* createButton(char* buttonTag)
 		free(attributes);
 	}
 	
-	finalTag = malloc(sizeof(char) * (strlen(tagArgs) + strlen(buttonName) + strlen(buttonLink) + strlen("<form method=\"post\" action=\"\"><button type=\"submit\" name=\"\">Enter</button></form>") + 1));
+	finalTag = malloc(sizeof(char) * (strlen(tagArgs) + strlen(buttonName) + strlen(buttonLink) + strlen(buttonText) + strlen("<form method=\"post\" action=\"\"><button type=\"submit\" name=\"\">Enter</button></form>") + 1));
 	finalTag[0] = '\0';
 
 	strcat(finalTag, "<form method=\"post\" action=\"");
 	strcat(finalTag, buttonLink);
-	strcat(finalTag, "\"><button type=\"submit\"");
+	strcat(finalTag, "\" ");
 	strcat(finalTag, tagArgs);
+	strcat(finalTag, "><button type=\"submit\"");
 	strcat(finalTag, " name=\"");
 	strcat(finalTag, buttonName);
-	strcat(finalTag, "\">Enter</button></form>");
+	strcat(finalTag, "\">");
+	strcat(finalTag, buttonText);
+	strcat(finalTag, "</button></form>");
 
 	return finalTag;
 }
@@ -715,6 +730,197 @@ char* createExec(char* execTag)
 	strcat(finalTag, "\", $output, $result); ");
 	strcat(finalTag, tagArgs);
 	strcat(finalTag, "?>");
+
+	return finalTag;
+}
+
+char* createDiv(char* divTag)
+{
+	int i;
+	char tagArgs[1024];
+	char idBuffer[512];
+	char divBuffer[2048];
+
+	char* finalTag;
+	char** attributes;
+
+	i = 0;
+	tagArgs[0] = '\0';
+	idBuffer[0] = '\0';
+	divBuffer[0] = '\0';
+
+	attributes = getArgs(divTag);
+
+	if(attributes != NULL)
+	{
+		while(attributes[i] != NULL)
+		{
+			if(strncmp(attributes[i], "id", 2) == 0)
+			{
+				char* value;
+				value = getValue(attributes[i]);
+				strcpy(idBuffer, value);
+
+				free(value);
+			}
+			else
+			{
+				strcat(tagArgs, " ");
+				strcat(tagArgs, attributes[i]);
+			}
+
+			free(attributes[i]);
+			i++;
+		}
+		free(attributes);
+	}
+	
+	strcpy(divBuffer, "<div id=\"");
+	strcat(divBuffer, idBuffer);
+	strcat(divBuffer, "\" ");
+	strcat(divBuffer, tagArgs);
+	strcat(divBuffer, ">");
+
+	finalTag = malloc(sizeof(char) * (strlen(divBuffer) + 1));
+	strcpy(finalTag, divBuffer);
+
+	return finalTag;
+}
+
+
+char* createDependency(char* depTag)
+{
+	int i;
+	char tagArgs[1024];
+	char idBuffer[512];
+	char varBuffer[512];
+
+	char depBuffer[2048];
+
+	char* finalTag;
+	char** attributes;
+
+	i = 0;
+	tagArgs[0] = '\0';
+	idBuffer[0] = '\0';
+	depBuffer[0] = '\0';
+
+	attributes = getArgs(depTag);
+
+	if(attributes != NULL)
+	{
+		while(attributes[i] != NULL)
+		{
+			if(strncmp(attributes[i], "id", 2) == 0)
+			{
+				char* value;
+
+				value = getValue(attributes[i]);
+				strcpy(idBuffer, value);
+
+				free(value);
+			}
+			else if(strncmp(attributes[i], "dep", 3) == 0)
+			{
+				char* value;
+
+				value = getValue(attributes[i]);
+				strcpy(varBuffer, value);
+
+				free(value);
+			}
+			else
+			{
+				strcat(tagArgs, " ");
+				strcat(tagArgs, attributes[i]);
+			}
+
+			free(attributes[i]);
+			i++;
+		}
+		free(attributes);
+	}
+
+	strcpy(depBuffer, "<?php echo \"<input type=\\\"hidden\\\" value=\\\"\".$_POST[\"");
+	strcat(depBuffer, varBuffer);
+	strcat(depBuffer, "\"].\"\\\" name=\\\"");
+	strcat(depBuffer, varBuffer);
+	strcat(depBuffer, "\\\" form=\\\"");
+	strcat(depBuffer, idBuffer);
+	strcat(depBuffer, "\\\" ");
+	strcat(depBuffer, tagArgs);
+	strcat(depBuffer, ">\"; ?>");
+
+	finalTag = malloc(sizeof(char) * (strlen(depBuffer) + 1));
+	strcpy(finalTag, depBuffer);
+
+	return finalTag;
+}
+
+
+char* createAdd(char* addTag)
+{
+	char buffer[2048];
+
+	char* finalTag;
+
+	buffer[0] = '\0';
+	strcat(buffer, "<?php\n");
+	strcat(buffer, " echo \"<form id=\\\"adduser\\\" method=\\\"post\\\" action=\\\"addauthor.php\\\">\";\n");
+	strcat(buffer, "echo \"<input type=\\\"text\\\" name=\\\"newstreams\\\"><br>\";\n");
+	strcat(buffer, "$files = scandir(\"./messages\");\n");
+	strcat(buffer, "$streams = array();\n");
+	strcat(buffer, "foreach($files as $fn)\n{\n if(strpos($fn, \"StreamUsers\") !== false)\n{\n $streams[] = substr($fn, 0, strlen($fn) - 11);\n}\n}\n");
+	strcat(buffer, "foreach($streams as $stream)\n{\n echo \"<input type=\\\"checkbox\\\" name=\\\"streams[]\\\" value=\\\"$stream\\\">$stream<br>\";\n}\n");
+	strcat(buffer, "echo \"<input type=\\\"submit\\\" value=\\\"add\\\" name=\\\"action\\\"><input type=\\\"submit\\\" value=\\\"remove\\\" name=\\\"action\\\">\";\n");
+	strcat(buffer, "echo \"</form>\";\n?>");
+	
+	finalTag = malloc(sizeof(char) * (strlen(buffer) + 1));
+	strcpy(finalTag, buffer);
+
+	return finalTag;
+}
+
+
+char* createView(char* viewTag)
+{
+
+}
+
+
+char* createPost(char* postTag)
+{
+	char buffer[2048];
+	char* finalTag;
+
+	buffer[0] = '\0';
+
+	strcat(buffer, "<?php\n");
+	strcat(buffer, "$files = scandir(\"./messages\");\n");
+	strcat(buffer, "$streams = array();\n");
+	strcat(buffer, "$username = $_POST[\"username\"];\n");
+
+	strcat(buffer, "foreach($files as $fn)\n{\n");
+	strcat(buffer, "if(strpos($fn, \"StreamUsers\") !== false)\n{\n");
+	strcat(buffer, "$lines = file(\"messages/\".$fn);\n");
+	strcat(buffer, "foreach($lines as $line)\n{\n");
+	strcat(buffer, "if(strpos($lines, $username) !== false)\n{\n");
+	strcat(buffer, "$streams[] = substr($fn, 0, strlen($fn) - 11);\n}\n}");
+	strcat(buffer, "\n}\n}\n");
+
+
+	strcat(buffer, "echo \"<form id=\\\"post\\\" method=\\\"post\\\" action=\\\"post.php\\\">\\n\";\n");
+	strcat(buffer, "echo \"<textarea name=\\\"post\\\" rows=\\\"20\\\" cols=\\\"70\\\">\\n</textarea><br>\\n\";\n");
+
+	strcat(buffer, "echo \"<select name=\\\"stream\\\">\\n\";\n");
+	strcat(buffer, "foreach($streams as $stream)\n{\n");
+	strcat(buffer, "echo \"<option value=\\\"$stream\\\">$stream</option>\\n\";\n}\n");
+	strcat(buffer, "echo \"</select><br>\\n\";\n");
+	strcat(buffer, "echo \"<input type=\\\"submit\\\" name=\\\"postpressed\\\" value=\\\"submit\\\">\\n</form>\\n\";\n");
+	strcat(buffer, "?>");
+
+	finalTag = malloc(sizeof(char) * (strlen(buffer) + 1));
+	strcpy(finalTag, buffer);
 
 	return finalTag;
 }

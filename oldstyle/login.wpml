@@ -1,0 +1,3 @@
+.f(id="header").h(size=1,text="Message Forum Login",style="text-align: center").g()
+.f(id="card").t(file="greeting.txt").g()
+.f(id="card").i(action="chooseStream.php",text="Username:<br>",name="username",value="").t(text="<br>Or, add an author to a stream:<br>").b(name="addauthor",link="addUser.php",id="addUser").g()

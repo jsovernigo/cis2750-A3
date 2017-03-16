@@ -42,7 +42,7 @@ post: libstream.a post.o
 	$(CC) $(CFLAGS) -o post post.o -L$(LPATH) $(LINK)
 
 create:	tags.o generation.o
-	$(CC) $(CFLAGS) -o create create.c tags.o generation.o -I$(CFLAGS)
+	$(CC) $(CFLAGS) -o create create.c tags.o generation.o -I$(INCLUDE)
 
 view.py:
 	chmod +x ./view.py
@@ -93,13 +93,16 @@ deploy:
 	scp -r *.cc gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	scp -r *.py gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	scp -r *.css gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
-	scp -r *.jpg gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
+	#scp -r *.jpg gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	scp -r Makefile gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	scp -r *.wpml gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	scp -r readme.txt gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	scp -r *.php gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
+	scp -r *.txt gsoverni@2750web.socs.uoguelph.ca:/srv/www/gsoverni
 	ssh gsoverni@2750web.socs.uoguelph.ca "cd /srv/www/gsoverni && mkdir -p ./bin && make"
 
+close:
+	cp * /var/www/html/gsoverni
 
 clean:
 	rm $(EXEC1) $(EXEC2) $(EXEC3) $(CCON) 

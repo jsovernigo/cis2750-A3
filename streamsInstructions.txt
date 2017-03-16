@@ -1,0 +1,9 @@
+This is the main menu screen.<br>
+to view a stream you currently belong to, simply use the first box below to select the desired stream to view.<br>
+<br>
+To subscribe or unsubscribe from any streams, see the second box, and use the
+check boxes beside the stream names to add or remove yourself from the subscription.<br>
+<br>
+to post to a message to a stream, see the last box, provide the stream you wish, then simply post to the stream using the text area, and submit the post when you are done.<br>
+<br>
+Thanks for using the messaging system.<br>

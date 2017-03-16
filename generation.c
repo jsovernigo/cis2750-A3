@@ -57,7 +57,6 @@ void generatePage(char* fname)
 		puts(LINE_BREAK);
 	}
 
-
 	fclose(inFile);
 
 	return;
@@ -96,6 +95,22 @@ char* generateTag(char* configTag)
 			break;
 		case('e'):
 			markup = createExec(configTag);
+			break;
+		case('f'): /* stands for 'format' */
+			markup = createDiv(configTag);
+			break;
+		case('g'):
+			markup = malloc(sizeof(char) * (strlen("</div>") + 1));
+			strcpy(markup, "</div>");
+			break;
+		case('z'):
+			markup = createDependency(configTag);
+			break;
+		case('a'):
+			markup = createAdd(configTag);
+			break;
+		case('w'):
+			markup = createPost(configTag);
 			break;
 	}
 

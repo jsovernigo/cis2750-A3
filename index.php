@@ -8,7 +8,7 @@
 <body>
 
 <?php
-exec("./create login.wpml", $output, $result);
+exec("./create index.wpml", $output, $result);
 foreach($output as $line)
 {
 	echo $line;

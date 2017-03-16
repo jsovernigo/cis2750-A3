@@ -282,309 +282,81 @@ def getDateKey(inpost):
 
 
 #
-#   clearScreen
-#   clears the screen, printing 24 newlines.
-#   IN:         void
-#   OUT:        void
-#   POST:       24 newlines have been printed to stdout
-#   ERROR:      none
+#   argv[1] == username.
+#   argv[2] == current stream
+#   argv[3] == current post
+#   argv[4] == current order
+#   argv[5] == command?
+#   argv[6] ?= new stream
 #
-def clearScreen():
-    for i in range(0,24):
-        print ()
-
-
-#
-#   padScreen
-#   prints 22 - getlines(messagePrinted) newlines the the screen, to normalize
-#   it.
-#   IN:         messagePrinted      - the message to be padded on the screen
-#   OUT:        void
-#   POST:       22 - getLines(messagePrinted) newlines have been printed.
-#   ERROR:      messagePrinted is None
-#
-def padScreen(messagePrinted):
-    numlines = 0
-
-    for c in messagePrinted:
-        if c == '\n':
-            numlines += 1
-    for i in range(0, 22 - numlines):
-        print ()
-
-
-#
-#   twoFourSplit
-#   splits the posts up, printing only 24 lines at a time.
-#   IN:         posts               - the posts taken from a stream (or all)
-#   OUT:        an array of post 'segments' which represent 22-line max chunks
-#   POST:       array retruned.
-#   ERROR:      posts is None or contains None
-#
-def twoFourSplit(posts):
-    fposts = []
-    cfpost = []
-
-    # loop by posts
-    for post in posts:
-        chars = 0
-        lines = 0
-        csection = 0
-
-        cfpost.append("")
-
-        # loop by character
-        for c in post:
-            
-            if c == '\n':
-                lines += 1
-            
-            cfpost[csection] += str(c)
-            chars += 1
-
-            # changes over to the next post segment.
-            if chars == 80*22:
-                chars = 0
-                lines = 0
-                csection += 1
-                cfpost.append("")
-            elif lines == 22:
-                chars = 0
-                lines = 0
-                csection += 1
-                cfpost.append("")
-
-        # appends the newly created post to the array of 23-line post-segments.
-        fposts.append(cfpost)
-        cfpost = []
-
-    return fposts
-
-
 if __name__ == "__main__":
 
-    userName = ""
+    newStream = "";
+    userName = argv[1]
+    currentStream = argv[2]
+    currentPost = argv[3]
+    currentOrder = argv[4]
 
-    # if there are not enough arguments in the argument vector.
-    if len(argv) < 2:
-        print ("Too few arguments to call view.\n\tUsage: ./view.py <username>")
-        exit()
-    else:
-        # get the username.
-        for i in range (1, len(argv)):
-            userName += argv[i]
-            userName += " "
+    command = argv[5]
+    if command == 'switch':
+        newStream = argv[6];
+    
+    i = int(currentPost);
+    order = currentOrder
 
-    # eliminates the last space that was placed by the loop
-    userName = userName[:-1]
+    posts = []
 
-    # gets the streams that the user has access to.
-    streams = getStreams(userName)
-    if not streams:
-        print ("Sorry, you have no streams to view.  Use ./addauthor to add yourself.")
-        exit()
-    streams.append("all")
-
-    # lists the streams
-    for s in streams:
-        print (s, end = " ")
-    print ()
-
-    # gets the stream choice
-    streamChoice = input()
-    while streamChoice not in streams:
-        streamChoice = input()
-    #ENDOF COMPLETECODE
-
-    i = 0
-    order = "date"
-
-    if streamChoice == "all":
-        posts = []
-        sepposts = []
+    if currentStream == "all":
+        streams = getStreams(userName)
 
         for stream in streams:
-            tposts = getPosts(stream)
-            if tposts is None:
+            tempposts = getPosts(stream)
+            #this would occur if the file did not exist.
+            if tempposts is None:
                 continue
 
-            tseps = twoFourSplit(tposts)
-            for p in tseps:
-                p.append(stream)
-            sepposts += tseps
-        i = 0
-
-        sepposts = sorted(sepposts, key=getDateKey)
+            for t in tempposts:
+                t.append(stream); # marks the end of the post with the stream.
+            posts += tempposts;
     else:
-
-        posts = getPosts(streamChoice)
+        posts = getPosts(currentStream)
         if posts is None:
-            print ("No stream file exists with posts using that name")
             exit()
-        lastRead = getLastRead(userName, streamChoice)
 
-        sepposts = twoFourSplit(posts)
-        for p in sepposts:
-            p.append(streamChoice)
+    # PRE SORT THE STUFF 
+    if order == 'date':
+        posts = sorted(posts, key=getDateKey)
+    elif order == 'name':
+        posts = sorted(posts, key=getNameKey)
 
-        i = lastRead
-        if i >= len(sepposts):
-            i = len(sepposts) - 1
-    j = 0
-
-    saveI = 0
-    saveJ = 0
-
-    lastI = 0
-
-    while 1:
-
-        printedLines = 0;
-
-        screen = ""
-
-        # while we have not filled a screen :)
-        while printedLines < 22:
-            seg = sepposts[i][0]
-
-            if printedLines + getLines(seg) <= 21:
-                setRead(userName, sepposts[i][-1], getPosInStream(sepposts, i))
-                screen += seg
-                screen += "--------------------------------------------------------------------------------\n"
-                printedLines += getLines(seg) + 1
-                i += 1
-                if i >= len(sepposts):
-                    i = len(sepposts) - 1
-                    break
-
-            else:
-                break
-
-
-        #print (seg, end = '')
-        #padScreen(seg)
-
-        print (screen, end = '')
-        padScreen(screen)
-        print ("Page Up   Page Down   O-order toggle   M-mark all   S-stream  C-check for new")
-
-        keyPress = input()
-            
+    #-------------------------------------------------------------------------#
         # page down key
-        if keyPress == '\x1b[B' or keyPress == 'j':
-            i += 1
-            if i >= len(sepposts):
-                i = len(sepposts) - 1
+    if command == 'next':
+        i += 1
+        if i >= len(posts):
+            i = len(posts) -1
 
-            if order == "date":
-                setRead(userName, sepposts[i][-1], getPosInStream(sepposts, i))
+        if order == "date":
+            setRead(userName, posts[i][-1], getPosInStream(posts, i))
 
         # page up key
-        elif keyPress == '\x1b[A' or keyPress == 'k':
-            lastlines = 0
+    elif command == 'prev':
+        i = i - 1;
+        if i < 0:
+            i = 0
 
-            while lastlines < 22:
-                i -= 1
-                lastlines += getLines(sepposts[i][0])
-                if i < 0:
-                    i = 0
-                    break
-
-        # toggle the stream orders
-        elif keyPress == 'O':
-            if order == "date":
-                order = "name"
-                sepposts = sorted(sepposts, key = getNameKey)
-                saveI = i
-                saveJ = j
-                i = 0
-                j = 0
-
-            elif order == "name":
-                order = "date"
-                sepposts = sorted(sepposts, key = getDateKey)
-                i = saveI
-                j = saveJ
-
-        # mark all messages
-        elif keyPress == 'M':
-            if streamChoice != 'all':
-                setRead(userName, streamChoice, len(getPosts(streamChoice)) - 1)
-            else:
-                for s in streams:
-                    nread = 0
-                    tp = getPosts(s)
-                    if tp is None:
-                        continue
-                    else:
-                        nread = len(tp) - 1
-                    setRead(userName, s, nread)
-
-
-        # switch to a new stream.
-        elif keyPress == 'S':
-            osc = streamChoice
-            streamChoice = input("New Stream: ")
-            while streamChoice not in streams:
-                streamChoice = input()
-
-            if streamChoice != 'all':
-
-                newPosts = getPosts(streamChoice)
-                if newPosts is None:
-                    streamChoice = osc
+    #-------------------------------------------------------------------------#
+    elif command == 'mark':
+        if streamChoice != 'all':
+            setRead(userName, currentStream, len(getPosts(currentStream)) - 1)
+        else:
+            for s in streams:
+                nread = 0
+                tp = getPosts(s)
+                if tp is None:
                     continue
-                lastRead = getLastRead(userName, streamChoice)
-                sepposts = twoFourSplit(newPosts)
-                for p in sepposts:
-                    p.append(streamChoice)
+                else:
+                    nread = len(tp) - 1
+                setRead(userName, s, nread)
+    print(posts[i]);
 
-                i = lastRead
-                if i >= len(sepposts):
-                    i = len(sepposts) - 1
-
-                j = 0
-            else:
-                sepposts = []
-                for stream in streams:
-                    tposts = getPosts(stream)
-                    if tposts is None:
-                        continue
-
-                    tseps = twoFourSplit(tposts)
-                    for p in tseps:
-                        p.append(stream)
-                    sepposts += tseps
-                i = 0
-
-                sepposts = sorted(sepposts, key=getDateKey)
-
-        # check for new posts
-        elif keyPress == 'C':
-            # update a single stream
-            if streamChoice != 'all':
-                posts = getPosts(streamChoice)
-                sepposts = twoFourSplit(posts)
-                for p in sepposts:
-                    p.append(streamChoice)
-            # update all streams.
-            else:
-                sepposts = []
-                for stream in streams:
-                    tposts = getPosts(stream)
-                    if tposts is None:
-                        continue
-
-                    tseps = twoFourSplit(tposts)
-                    for p in tseps:
-                        p.append(stream)
-                    sepposts += tseps
-                i = 0
-
-                # these will be disorganized, because theyre currently loaded by stream.
-                sepposts = sorted(sepposts, key=getDateKey)
-
-        elif keyPress == 'q':
-            break
-                
-    clearScreen()

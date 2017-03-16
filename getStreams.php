@@ -25,13 +25,14 @@ foreach ($files as $fn)
 	}
 }
 
-echo "<form method=\"post\" action=\"viewPost.php\"><select>";
+echo "<form id=\"streamget\" method=\"post\" action=\"viewPost.php\"><select name=\"stream\">";
 
 foreach($streams as $cstream)
 {
 	echo "<option value = $cstream>$cstream</option>";
 }
 
-echo "</select><input type=\"submit\" value=\"View Stream\"></form>";
+echo "</select>";
+echo "<input type=\"submit\" value=\"View Stream\"></form>";
 
 ?>

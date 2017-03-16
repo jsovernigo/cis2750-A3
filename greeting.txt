@@ -1,0 +1,2 @@
+Hello, and welcome to the messaging system.<br>
+Please log in to your account below to begin viewing the streams.

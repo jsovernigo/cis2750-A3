@@ -15,44 +15,32 @@
 
 int main(int argc, char** argv)
 {
-	int i;
 	int remove;
 	char list[1024];
 	char userName[512];
 
 	/* checks the number of args present, makes sure we actually get a file name */
-	if(argc < 2)
+	if(argc < 3)
 	{
-		fputs("Too few arguments to execute.\n\tUsage: ./addAuthor [-r] <username>\n", stdout);
 		return 1;
 	}
 
 	remove = 0;
-	userName[0] = '\0';
 
-	for(i = 1; i < argc; i++)
+	strcpy(userName, argv[1]);
+	if(strcmp(argv[2], "-r") == 0)
 	{
-		if(strcmp(argv[i], "-r") == 0)
+		return 1;
+	}
+	strcpy(list, argv[2]);
+
+	if(argc > 3)
+	{
+		if(strcmp(argv[3], "-r") == 0)
 		{
 			remove = 1;
 		}
-		else
-		{
-			strcat(userName, argv[i]);
-			strcat(userName, " ");
-		}
 	}
-
-	/* eliminates the space that follows the username. */
-	if(userName[strlen(userName) - 1] == ' ')
-	{
-		userName[strlen(userName) - 1] = '\0';
-	}
-	
-
-	/* prints the prompt, then gets the list from the user. */
-	fputs("List Streams: ", stdout);
-	fgets(list, 1024, stdin);
 
 	if(!remove)
 	{

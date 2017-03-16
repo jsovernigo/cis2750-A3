@@ -1,0 +1,4 @@
+.f(id="header").h(size=1,text="View Streams").g()
+.f(id="card").f(id="view").g().g()
+.f(id="card").b(id="post",name="post",link="post.php",text="Post to a stream").g()
+.z(id="post",dep="username")

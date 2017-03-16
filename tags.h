@@ -46,4 +46,32 @@ char* createPicture(char* pictureTag);
  */
 char* createExec(char* execTag);
 
+
+/*-------------------------- start of user-made tags ---------------------------*/
+
+/**
+ *
+ */
+char* createDiv(char* divTag);
+
+/**
+ *
+ */
+char* createDependency(char* depTag);
+
+/**
+ *
+ */
+char* createAdd(char* addTag);
+
+/**
+ *
+ */
+char* createView(char* viewTag);
+
+/**
+ *
+ */
+char* createPost(char* postTag);
+
 #endif

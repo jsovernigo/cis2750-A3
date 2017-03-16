@@ -199,50 +199,27 @@ char* doubleString(char* currentString, int * currentLen)
 
 int main(int argc, char** argv)
 {
-	int i;
 	int result;
-	char* textEntered;
-	char streamName[512];
 	char userName[512];
+	char* post;
+	char stream[512];
 
 	struct userPost* pt;
 
 	class PostEntry pe;
 
-	if(argc < 2)
+	if(argc < 4)
 	{
-		fputs("Too few arguments to execute.\n\tUsage: ./post <username>\n", stdout);
 		return 1;
 	}
 
-	userName[0] = '\0';
-	for(i = 1; i < argc; i++)
-	{
-		strcat(userName, argv[i]);
-		strcat(userName, " ");
-	}
-	
-	/* eliminates the final space */
-	userName[strlen(userName) - 1] = '\0';
+	strcpy(userName, argv[1]);
+	strcpy(stream, argv[2]);
+	post = malloc(sizeof(char) * (strlen(argv[3]) + 1));
+	strcpy(post, argv[3]);
 
-	fputs("Stream: ", stdout);
-	fgets(streamName, 511, stdin);
-	/* re-null-terminate */
-	streamName[strlen(streamName) - 1] = '\0';
-
-	textEntered = pe.readInput();
-
-	pt = pe.formatEntry(userName, streamName, textEntered);
+	pt = pe.formatEntry(userName, stream, post);
 	result = pe.submitPost(pt);
-
-	if(result == 0)
-	{
-		puts("Post submitted!");
-	}
-	else if(result == 1)
-	{
-		puts("You do not have permission to post to this stream.");
-	}
 
 	free(pt->username);
 	free(pt->streamname);
@@ -250,7 +227,12 @@ int main(int argc, char** argv)
 	free(pt->text);
 	free(pt);
 
-	free(textEntered);
+	free(post);
+
+	if(result != 0)
+	{
+		return 1;
+	}
 
 	return 0;
 }

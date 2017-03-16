@@ -1,0 +1,3 @@
+.f(id="header").h(size=1,text="Post to Stream").g()
+.f(id="card").w().g()
+.z(id="post",dep="username").z(id="back",dep="username")

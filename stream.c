@@ -111,7 +111,12 @@ int addUser(char* username, char* list)
 			FILE* streamUserFile;
 			char finalFileName[512];
 
-			buffer[cpos - 1] = '\0';
+			buffer[cpos] = '\0';
+
+			if(buffer[cpos - 1] == ',')
+			{
+				buffer[cpos - 1] = '\0';
+			}
 			strcpy(finalFileName, "messages/");
 			strcat(finalFileName, buffer);
 			strcat(finalFileName, "StreamUsers");
@@ -170,10 +175,17 @@ int removeUser(char* username, char* list)
 			FILE* streamUserFile;
 			char finalFileName[512];
 
-			buffer[cpos - 1] = '\0';
+			buffer[cpos] = '\0';
+			if(buffer[cpos - 1] == ',')
+			{
+				buffer[cpos - 1] = '\0';
+			}
+			
 			strcpy(finalFileName, "messages/");
 			strcat(finalFileName, buffer);
 			strcat(finalFileName, "StreamUsers");
+			buffer[0] = '\0';
+			cpos = 0;
 
 			/* check if present */
 			if(checkIfPresent(finalFileName, username) == 1)

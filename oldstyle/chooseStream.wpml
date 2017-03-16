@@ -1,0 +1,6 @@
+.f(id="header").h(size=1,text="Message Forum Main Menu",style="text-align: center").g()
+.f(id="card").t(file="streamsInstructions.txt").t(text="</div>")
+.f(id="card").t(text="Please select a stream to read").t(file="getStreams.php").g()
+.f(id="card").t(text="Add a this account to other stream(s)").t(file="addStreams.php").g()
+.f(id="card").t(text="Submit a post<br>").t(file="makePost.php").g()
+.z(id="streamget",dep="username").z(id="adduser",dep="username").z(id="post",dep="username")
